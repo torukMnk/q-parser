@@ -11,7 +11,7 @@ using namespace std;
 void Qparser::file_read(char file_name[])
 {
   _file = fopen(file_name,"rb");
-  if (_file==NULL) {fputs ("File error",stderr); exit (1);}
+  if (_file==NULL) {fputs ("No such file\n",stderr); exit (1);}
   fseek(_file,0,SEEK_END);
   lSize = ftell(_file);
   rewind(_file);
@@ -201,14 +201,14 @@ void Qparser::q_file_make(char file_name[])
   _file = fopen (f_name,"w");
   int j;
   cout<<"========================================================"<<endl;
-  cout<<">>Contenido"<<endl;
+  cout<<">>Content"<<endl;
   cout<<"========================================================"<<endl;
   stringstream lineas;
   for(j = 0;j < _line;j++)
   {
     lineas<<line[j].line_data;
   }
-  lineas<<"\n>>Lineas compiladas: "<<_line<<"\n";
+  lineas<<"\n>>Compiled Lines: "<<_line<<"\n";
   string data_l = lineas.str();
   fputs(data_l.c_str(),_file);
   cout<<data_l<<endl;
@@ -221,52 +221,52 @@ void Qparser::q_file_make(char file_name[])
   {
     variables<<asignation[j].variable;
   }
-  variables<<"\n>>Asignacion: "<<_line<<"\n";
+  variables<<"\n>>Asignations: "<<_line<<"\n";
   string data_v = variables.str();
   fputs(data_v.c_str(),_file);
   cout<<data_v<<endl;
 
   cout<<"========================================================"<<endl;
-  cout<<">>Constantes"<<endl;
+  cout<<">>Constants"<<endl;
   cout<<"========================================================"<<endl;
   for(j = 0; j < n_digit-1; j++)
   {
-    cout<<"Linea["<<operation[j].line+1<<"] >>"<<operation[j].value<<endl;
+    cout<<"Line["<<operation[j].line+1<<"] >>"<<operation[j].value<<endl;
   }
 
   cout<<"========================================================"<<endl;
-  cout<<">>Operadores"<<endl;
+  cout<<">>Operators"<<endl;
   cout<<"========================================================"<<endl;
   for(j = 0; j < n_digit; j++)
   {
     if(operation[j]._operator == '+')
     {
-      cout<<"Linea: ["<<operation[j].line+1<<"] ("<<operation[j]._operator<<")SUMA"<<endl;
+      cout<<"Line: ["<<operation[j].line+1<<"] ("<<operation[j]._operator<<")SUMA"<<endl;
     }
     if(operation[j]._operator == '-')
     {
-      cout<<"Linea: ["<<operation[j].line+1<<"] ("<<operation[j]._operator<<")RESTA"<<endl;
+      cout<<"Line: ["<<operation[j].line+1<<"] ("<<operation[j]._operator<<")RESTA"<<endl;
     }
     if(operation[j]._operator == '*')
     {
-      cout<<"Linea: ["<<operation[j].line+1<<"] ("<<operation[j]._operator<<")MULTIPLICACION"<<endl;
+      cout<<"Line: ["<<operation[j].line+1<<"] ("<<operation[j]._operator<<")MULTIPLICACION"<<endl;
     }
     if(operation[j]._operator == '/')
     {
-      cout<<"Linea: ["<<operation[j].line+1<<"] ("<<operation[j]._operator<<")DIVICION"<<endl;
+      cout<<"Line: ["<<operation[j].line+1<<"] ("<<operation[j]._operator<<")DIVICION"<<endl;
     }
 
   }
 
   cout<<"========================================================"<<endl;
-  cout<<">>Resultados"<<endl;
+  cout<<">>Result"<<endl;
   cout<<"========================================================"<<endl;
   stringstream resultados;
   for(j = 0;j < _line;j++)
   {
     resultados<<asignation[j].variable<<"="<<asignation[j].value;
   }
-  resultados<<"\n>>Resultados"<<"\n";
+  resultados<<"\n>>Result"<<"\n";
   string data_r = resultados.str();
   fputs(data_r.c_str(),_file);
   cout<<data_r<<endl;

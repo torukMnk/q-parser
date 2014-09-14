@@ -15,9 +15,9 @@ int main(void)
   char name[16];
 
   do{
-    system("clear");      //Linux
+    system("clear");
     cout<<":: Q Compiler ::"<<endl;
-    cout<<"Nombre del archivo: ";
+    cout<<"Insert name file: ";
     cin>>name;
     cout<<endl;
     com.file_read(name);
@@ -27,7 +27,7 @@ int main(void)
     com.compile_variables_operation();
     com.q_file_make(name);
 
-    cout<<"Desea compilar otro archivo: (Y/N): ";
+    cout<<"Do you want compile another file: (Y/N): ";
     cin>>option;
     option = toupper(option);
 
