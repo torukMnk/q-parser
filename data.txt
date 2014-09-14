@@ -1,0 +1,5 @@
+lado1=5;
+lado2=86;
+base=105;
+color2=200;
+calculo=lado1+lado2-base+300-100/color2-4;
