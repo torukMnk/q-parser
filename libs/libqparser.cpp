@@ -40,20 +40,20 @@ void Qparser::file_compress()
 void Qparser::compile_lines()
 {
   memset( &file.line, 0, sizeof(file.line) );
-  int _char;
-  int _data;
+  int qchar;
+  int fchar;
   file.index = 0;
-  _data = 0;
+  fchar = 0;
 
-  for(_char = 0; _char < file.q_file.elements; _char++)
+  for(qchar = 0; qchar < file.q_file.elements; qchar++)
   {
-    file.line[file.index].data[_data] = file.q_file.buffer[_char];
-    _data +=1;
-    if( file.q_file.buffer[_char] == ';' )
+    file.line[file.index].data[fchar] = file.q_file.buffer[qchar];
+    fchar +=1;
+    if( file.q_file.buffer[qchar] == ';' )
     {
       file.line[file.index].len = strlen(file.line[file.index].data);
       file.index +=1;
-      _data = 0;
+      fchar = 0;
     }
   }
   free(file.q_file.buffer);
@@ -62,76 +62,76 @@ void Qparser::compile_lines()
 void Qparser::compile_variables_assignation()
 {
   memset( &file.asignation, 0, sizeof(file.asignation) );
-  int _char;
-  int i;
-  _char = 0;
-  for(i=0;i < file.index;i++)
+  int qchar;
+  int index;
+  qchar = 0;
+  for(index=0;index < file.index;index++)
   {
-    while(file.line[i].data[_char] != '=')
+    while(file.line[index].data[qchar] != '=')
     {
-      file.asignation[i].variable[_char] = file.line[i].data[_char];
-      _char +=1;
+      file.asignation[index].variable[qchar] = file.line[index].data[qchar];
+      qchar +=1;
     };
-    file.asignation[i].len = strlen(file.asignation[i].variable);
-    _char = 0;
+    file.asignation[index].len = strlen(file.asignation[index].variable);
+    qchar = 0;
   }
 }
 
 void Qparser::compile_variables_operation()
 {
   memset( &file.operation, 0, sizeof(file.operation) );
-  int i;                  //Numero de Linea
-  int len;                //Longitud de linea
-  int k;                  //Lector de caracteres en la linea
-  int _digit;             //Posicion de nuevo valor en la linea digit
+  int index;
+  int len;
   int _char;
-  int count_as;           //Variables asignacion indirectas
+  int _digit;
+  int qchar;
+  int asignation;
 
   len = 0;
   file.q_file.digits = 0;
   _digit = 0;
-  count_as = 0;
+  asignation = 0;
 
-  for(i=0;i < file.index; i++)
+  for(index=0;index < file.index; index++)
   {
-    _char = file.asignation[i].len+1;
-    len = file.line[i].len;
+    qchar = file.asignation[index].len+1;
+    len = file.line[index].len;
 
-    for(k=0; k < len; k++)
+    for(_char=0; _char < len; _char++)
     {
-      if (isdigit(file.line[i].data[_char]))
+      if (isdigit(file.line[index].data[qchar]))
       {
-        file.operation[file.q_file.digits].variable[_digit] = file.line[i].data[_char];
-        file.operation[file.q_file.digits].line = i;
+        file.operation[file.q_file.digits].variable[_digit] = file.line[index].data[qchar];
+        file.operation[file.q_file.digits].line = index;
         _digit +=1;
-        _char+=1;
+        qchar+=1;
       }
-      else if(isalpha(file.line[i].data[_char]))
+      else if(isalpha(file.line[index].data[qchar]))
       {
-        file.operation[file.q_file.digits].variable[_digit] = file.line[i].data[_char];
-        file.operation[file.q_file.digits].line = i;
+        file.operation[file.q_file.digits].variable[_digit] = file.line[index].data[qchar];
+        file.operation[file.q_file.digits].line = index;
         _digit +=1;
-        _char+=1;
+        qchar+=1;
       }
 
       else
       {
-        if(file.line[i].data[_char] != ';')
+        if(file.line[index].data[qchar] != ';')
         {
-          file.operation[file.q_file.digits+1]._operator = file.line[i].data[_char];
+          file.operation[file.q_file.digits+1]._operator = file.line[index].data[qchar];
         }
         file.q_file.digits +=1;
         _digit = 0;
-        _char +=1;
+        qchar +=1;
       }
-      if(_char == len) k = len;
+      if(qchar == len) _char = len;
     }
   }
 
   //ASCII TO INTEGER
-  for(i = 0; i < file.q_file.digits; i++)
+  for(index = 0; index < file.q_file.digits; index++)
   {
-    file.operation[i].value = atoi(file.operation[i].variable);
+    file.operation[index].value = atoi(file.operation[index].variable);
   }
 
   //Operaciones Algebraicas Basicas(Lineal)
@@ -139,48 +139,48 @@ void Qparser::compile_variables_operation()
   int n_operator;
   total = 0;
   n_operator = 0;
-  for(i = 0; i < file.index+1; i++)
+  for(index = 0; index < file.index+1; index++)
   {
-    for(k = 0; k < file.q_file.digits; k++)
+    for(_char = 0; _char < file.q_file.digits; _char++)
     {
-      if(file.operation[k].line == i)
+      if(file.operation[_char].line == index)
       {
-        if(isalpha(file.operation[k].variable[0]))
+        if(isalpha(file.operation[_char].variable[0]))
         {
-          if(strcmp(file.operation[k].variable,file.asignation[k].variable))
+          if(strcmp(file.operation[_char].variable,file.asignation[_char].variable))
           {
-            file.operation[k].value = file.asignation[count_as].value;
-            count_as += 1;
+            file.operation[_char].value = file.asignation[asignation].value;
+            asignation += 1;
           }
         }
 
         n_operator +=1;
-        file.asignation[i].n_operators = n_operator;
-        if(file.operation[k]._operator == '\0')
+        file.asignation[index].n_operators = n_operator;
+        if(file.operation[_char]._operator == '\0')
         {
-          total += file.operation[k].value;
-          file.asignation[i].value = total;
+          total += file.operation[_char].value;
+          file.asignation[index].value = total;
         }
-        if(file.operation[k]._operator == '+')
+        if(file.operation[_char]._operator == '+')
         {
 
-          total += file.operation[k].value;
-          file.asignation[i].value = total;
+          total += file.operation[_char].value;
+          file.asignation[index].value = total;
         }
-        if(file.operation[k]._operator == '-')
+        if(file.operation[_char]._operator == '-')
         {
-          total -= file.operation[k].value;
-          file.asignation[i].value = total;
+          total -= file.operation[_char].value;
+          file.asignation[index].value = total;
         }
-        if(file.operation[k]._operator == '*')
+        if(file.operation[_char]._operator == '*')
         {
-          total *= file.operation[k].value;
-          file.asignation[i].value = total;
+          total *= file.operation[_char].value;
+          file.asignation[index].value = total;
         }
-        if(file.operation[k]._operator == '/')
+        if(file.operation[_char]._operator == '/')
         {
-          total /= file.operation[k].value;
-          file.asignation[i].value = total;
+          total /= file.operation[_char].value;
+          file.asignation[index].value = total;
         }
 
 
