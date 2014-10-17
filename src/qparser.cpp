@@ -25,7 +25,7 @@ int main(void)
     com.compile_lines();
     com.compile_variables_assignation();
     com.compile_variables_operation();
-    com.q_file_make(name);
+    com.q_file_make();
 
     cout<<"Do you want compile another file: (Y/N): ";
     cin>>option;

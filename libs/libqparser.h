@@ -7,6 +7,7 @@
  * */
 #ifndef QPARSER_H
 #define QPARSER_H
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -21,41 +22,48 @@
 class Qparser
 {
 
-  FILE *_file;
-  long lSize;
-  char *buffer;
-  int char_count;
-  size_t result;
-  char *q_buffer;
-  int q_count;
-  int _line;
-  int n_digit;
+  struct q_files{
+    char*   buffer;
+    int     elements;
+    int     digits;
+  };
 
   struct lines
   {
-    char line_data[MEM_VARIABLES];
-    int len;
+    char  data[MEM_VARIABLES];
+    int   len;
   };
 
   struct asignations
   {
-    char variable[MEM_VARIABLES];
+    char  variable[MEM_VARIABLES];
     float value;
-    int len;
-    int n_operators;
+    int   len;
+    int   n_operators;
   };
 
   struct operations
   {
-    char variable[MEM_VARIABLES];
-    char _operator;
+    char  variable[MEM_VARIABLES];
+    char  _operator;
     float value;
-    int line;
+    int   line;
   };
 
-  lines line[MEM_LINES];
-  asignations asignation[MEM_LINES];
-  operations operation[MEM_OPERATIONS];
+  struct files{
+    char*   name;
+    FILE*   target;
+    long    size;
+    char*   buffer;
+    size_t  read;
+    int     index;
+    struct  q_files q_file;
+    struct  lines line[MEM_LINES];
+    struct  asignations asignation[MEM_LINES];
+    struct  operations operation[MEM_OPERATIONS];
+  };
+
+  files file;
 
   public:
 
@@ -64,7 +72,7 @@ class Qparser
   void compile_lines();
   void compile_variables_assignation();
   void compile_variables_operation();
-  void q_file_make(char file_name[]);
+  void q_file_make();
 
 };
 

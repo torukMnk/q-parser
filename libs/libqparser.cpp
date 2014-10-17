@@ -10,74 +10,76 @@ using namespace std;
 
 void Qparser::file_read(char file_name[])
 {
-  _file = fopen(file_name,"rb");
-  if (_file==NULL) {fputs ("No such file\n",stderr); exit (1);}
-  fseek(_file,0,SEEK_END);
-  lSize = ftell(_file);
-  rewind(_file);
-  buffer = (char*)malloc(sizeof(char)*lSize);
-  result = fread(buffer,1,lSize,_file);
-  fclose (_file);
+  file.name = file_name;
+  file.target = fopen(file.name,"rb");
+  if (file.target==NULL) {fputs ("No such file\n",stderr); exit (1);}
+  fseek(file.target,0,SEEK_END);
+  file.size = ftell(file.target);
+  rewind(file.target);
+  file.buffer = (char*)malloc(sizeof(char)*file.size);
+  file.read = fread(file.buffer,1,file.size,file.target);
+  fclose (file.target);
 }
 
 void Qparser::file_compress()
 {
-  q_count = 0;
-  q_buffer = (char*)malloc(sizeof(char)*lSize);
-  for(char_count = 0;char_count < lSize;char_count++)
+  int position;
+  file.q_file.elements = 0;
+  file.q_file.buffer = (char*)malloc(sizeof(char)*file.size);
+  for(position = 0;position < file.size;position++)
   {
-    if(buffer[char_count] != ' ' )
+    if(file.buffer[position] != ' ' )
     {
-      q_buffer[q_count] = buffer[char_count];
-      q_count +=1;
+      file.q_file.buffer[file.q_file.elements] = file.buffer[position];
+      file.q_file.elements +=1;
     }
   }
-  free(buffer);
+  free(file.buffer);
 }
 
 void Qparser::compile_lines()
 {
-  memset( &line, 0, sizeof(line) );
+  memset( &file.line, 0, sizeof(file.line) );
   int _char;
   int _data;
-  _line = 0;
+  file.index = 0;
   _data = 0;
 
-  for(_char = 0; _char < q_count; _char++)
+  for(_char = 0; _char < file.q_file.elements; _char++)
   {
-    line[_line].line_data[_data] = q_buffer[_char];
+    file.line[file.index].data[_data] = file.q_file.buffer[_char];
     _data +=1;
-    if( q_buffer[_char] == ';' )
+    if( file.q_file.buffer[_char] == ';' )
     {
-      line[_line].len = strlen(line[_line].line_data);
-      _line +=1;
+      file.line[file.index].len = strlen(file.line[file.index].data);
+      file.index +=1;
       _data = 0;
     }
   }
-  free(q_buffer);
+  free(file.q_file.buffer);
 }
 
 void Qparser::compile_variables_assignation()
 {
-  memset( &asignation, 0, sizeof(asignation) );
+  memset( &file.asignation, 0, sizeof(file.asignation) );
   int _char;
   int i;
   _char = 0;
-  for(i=0;i < _line;i++)
+  for(i=0;i < file.index;i++)
   {
-    while(line[i].line_data[_char] != '=')
+    while(file.line[i].data[_char] != '=')
     {
-      asignation[i].variable[_char] = line[i].line_data[_char];
+      file.asignation[i].variable[_char] = file.line[i].data[_char];
       _char +=1;
     };
-    asignation[i].len = strlen(asignation[i].variable);
+    file.asignation[i].len = strlen(file.asignation[i].variable);
     _char = 0;
   }
 }
 
 void Qparser::compile_variables_operation()
 {
-  memset( &operation, 0, sizeof(operation) );
+  memset( &file.operation, 0, sizeof(file.operation) );
   int i;                  //Numero de Linea
   int len;                //Longitud de linea
   int k;                  //Lector de caracteres en la linea
@@ -86,39 +88,39 @@ void Qparser::compile_variables_operation()
   int count_as;           //Variables asignacion indirectas
 
   len = 0;
-  n_digit = 0;
+  file.q_file.digits = 0;
   _digit = 0;
   count_as = 0;
 
-  for(i=0;i < _line; i++)
+  for(i=0;i < file.index; i++)
   {
-    _char = asignation[i].len+1;
-    len = line[i].len;
+    _char = file.asignation[i].len+1;
+    len = file.line[i].len;
 
     for(k=0; k < len; k++)
     {
-      if (isdigit(line[i].line_data[_char]))
+      if (isdigit(file.line[i].data[_char]))
       {
-        operation[n_digit].variable[_digit] = line[i].line_data[_char];
-        operation[n_digit].line = i;
+        file.operation[file.q_file.digits].variable[_digit] = file.line[i].data[_char];
+        file.operation[file.q_file.digits].line = i;
         _digit +=1;
         _char+=1;
       }
-      else if(isalpha(line[i].line_data[_char]))
+      else if(isalpha(file.line[i].data[_char]))
       {
-        operation[n_digit].variable[_digit] = line[i].line_data[_char];
-        operation[n_digit].line = i;
+        file.operation[file.q_file.digits].variable[_digit] = file.line[i].data[_char];
+        file.operation[file.q_file.digits].line = i;
         _digit +=1;
         _char+=1;
       }
 
       else
       {
-        if(line[i].line_data[_char] != ';')
+        if(file.line[i].data[_char] != ';')
         {
-          operation[n_digit+1]._operator = line[i].line_data[_char];
+          file.operation[file.q_file.digits+1]._operator = file.line[i].data[_char];
         }
-        n_digit +=1;
+        file.q_file.digits +=1;
         _digit = 0;
         _char +=1;
       }
@@ -127,9 +129,9 @@ void Qparser::compile_variables_operation()
   }
 
   //ASCII TO INTEGER
-  for(i = 0; i < n_digit; i++)
+  for(i = 0; i < file.q_file.digits; i++)
   {
-    operation[i].value = atoi(operation[i].variable);
+    file.operation[i].value = atoi(file.operation[i].variable);
   }
 
   //Operaciones Algebraicas Basicas(Lineal)
@@ -137,48 +139,48 @@ void Qparser::compile_variables_operation()
   int n_operator;
   total = 0;
   n_operator = 0;
-  for(i = 0; i < _line+1; i++)
+  for(i = 0; i < file.index+1; i++)
   {
-    for(k = 0; k < n_digit; k++)
+    for(k = 0; k < file.q_file.digits; k++)
     {
-      if(operation[k].line == i)
+      if(file.operation[k].line == i)
       {
-        if(isalpha(operation[k].variable[0]))
+        if(isalpha(file.operation[k].variable[0]))
         {
-          if(strcmp(operation[k].variable,asignation[k].variable))
+          if(strcmp(file.operation[k].variable,file.asignation[k].variable))
           {
-            operation[k].value = asignation[count_as].value;
+            file.operation[k].value = file.asignation[count_as].value;
             count_as += 1;
           }
         }
 
         n_operator +=1;
-        asignation[i].n_operators = n_operator;
-        if(operation[k]._operator == '\0')
+        file.asignation[i].n_operators = n_operator;
+        if(file.operation[k]._operator == '\0')
         {
-          total += operation[k].value;
-          asignation[i].value = total;
+          total += file.operation[k].value;
+          file.asignation[i].value = total;
         }
-        if(operation[k]._operator == '+')
+        if(file.operation[k]._operator == '+')
         {
 
-          total += operation[k].value;
-          asignation[i].value = total;
+          total += file.operation[k].value;
+          file.asignation[i].value = total;
         }
-        if(operation[k]._operator == '-')
+        if(file.operation[k]._operator == '-')
         {
-          total -= operation[k].value;
-          asignation[i].value = total;
+          total -= file.operation[k].value;
+          file.asignation[i].value = total;
         }
-        if(operation[k]._operator == '*')
+        if(file.operation[k]._operator == '*')
         {
-          total *= operation[k].value;
-          asignation[i].value = total;
+          total *= file.operation[k].value;
+          file.asignation[i].value = total;
         }
-        if(operation[k]._operator == '/')
+        if(file.operation[k]._operator == '/')
         {
-          total /= operation[k].value;
-          asignation[i].value = total;
+          total /= file.operation[k].value;
+          file.asignation[i].value = total;
         }
 
 
@@ -193,67 +195,67 @@ void Qparser::compile_variables_operation()
 
 }
 
-void Qparser::q_file_make(char file_name[])
+void Qparser::q_file_make()
 {
-  char f_name[16];
-  strcpy(f_name,"q-");
-  strcat(f_name,file_name);
-  _file = fopen (f_name,"w");
+  char q_file[16];
+  strcpy(q_file,"q-");
+  strcat(q_file,file.name);
+  file.target = fopen (q_file,"w");
   int j;
   cout<<"========================================================"<<endl;
   cout<<">>Content"<<endl;
   cout<<"========================================================"<<endl;
   stringstream lineas;
-  for(j = 0;j < _line;j++)
+  for(j = 0;j < file.index;j++)
   {
-    lineas<<line[j].line_data;
+    lineas<<file.line[j].data;
   }
-  lineas<<"\n>>Compiled Lines: "<<_line<<"\n";
+  lineas<<"\n>>Compiled Lines: "<<file.index<<"\n";
   string data_l = lineas.str();
-  fputs(data_l.c_str(),_file);
+  fputs(data_l.c_str(),file.target);
   cout<<data_l<<endl;
 
   cout<<"========================================================"<<endl;
   cout<<">>Variables"<<endl;
   cout<<"========================================================"<<endl;
   stringstream variables;
-  for(j = 0;j < _line;j++)
+  for(j = 0;j < file.index;j++)
   {
-    variables<<asignation[j].variable;
+    variables<<file.asignation[j].variable;
   }
-  variables<<"\n>>Asignations: "<<_line<<"\n";
+  variables<<"\n>>Asignations: "<<file.index<<"\n";
   string data_v = variables.str();
-  fputs(data_v.c_str(),_file);
+  fputs(data_v.c_str(),file.target);
   cout<<data_v<<endl;
 
   cout<<"========================================================"<<endl;
   cout<<">>Constants"<<endl;
   cout<<"========================================================"<<endl;
-  for(j = 0; j < n_digit-1; j++)
+  for(j = 0; j < file.q_file.digits-1; j++)
   {
-    cout<<"Line["<<operation[j].line+1<<"] >>"<<operation[j].value<<endl;
+    cout<<"Line["<<file.operation[j].line+1<<"] >>"<<file.operation[j].value<<endl;
   }
 
   cout<<"========================================================"<<endl;
   cout<<">>Operators"<<endl;
   cout<<"========================================================"<<endl;
-  for(j = 0; j < n_digit; j++)
+  for(j = 0; j < file.q_file.digits; j++)
   {
-    if(operation[j]._operator == '+')
+    if(file.operation[j]._operator == '+')
     {
-      cout<<"Line: ["<<operation[j].line+1<<"] ("<<operation[j]._operator<<")SUMA"<<endl;
+      cout<<"Line: ["<<file.operation[j].line+1<<"] ("<<file.operation[j]._operator<<")SUMA"<<endl;
     }
-    if(operation[j]._operator == '-')
+    if(file.operation[j]._operator == '-')
     {
-      cout<<"Line: ["<<operation[j].line+1<<"] ("<<operation[j]._operator<<")RESTA"<<endl;
+      cout<<"Line: ["<<file.operation[j].line+1<<"] ("<<file.operation[j]._operator<<")RESTA"<<endl;
     }
-    if(operation[j]._operator == '*')
+    if(file.operation[j]._operator == '*')
     {
-      cout<<"Line: ["<<operation[j].line+1<<"] ("<<operation[j]._operator<<")MULTIPLICACION"<<endl;
+      cout<<"Line: ["<<file.operation[j].line+1<<"] ("<<file.operation[j]._operator<<")MULTIPLICACION"<<endl;
     }
-    if(operation[j]._operator == '/')
+    if(file.operation[j]._operator == '/')
     {
-      cout<<"Line: ["<<operation[j].line+1<<"] ("<<operation[j]._operator<<")DIVICION"<<endl;
+      cout<<"Line: ["<<file.operation[j].line+1<<"] ("<<file.operation[j]._operator<<")DIVICION"<<endl;
     }
 
   }
@@ -262,14 +264,15 @@ void Qparser::q_file_make(char file_name[])
   cout<<">>Result"<<endl;
   cout<<"========================================================"<<endl;
   stringstream resultados;
-  for(j = 0;j < _line;j++)
+  for(j = 0;j < file.index;j++)
   {
-    resultados<<asignation[j].variable<<"="<<asignation[j].value;
+    resultados<<file.asignation[j].variable<<"="<<file.asignation[j].value;
   }
   resultados<<"\n>>Result"<<"\n";
   string data_r = resultados.str();
-  fputs(data_r.c_str(),_file);
+  fputs(data_r.c_str(),file.target);
   cout<<data_r<<endl;
-  fclose (_file);
+  cout<<file.q_file.digits-1<<endl;
+  fclose (file.target);
 }
 
