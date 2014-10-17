@@ -8,7 +8,7 @@
 #include "libqparser.h"
 using namespace std;
 
-void Qparser::file_read(char file_name[])
+void Qparser::file_load(char file_name[])
 {
   file.name = file_name;
   file.target = fopen(file.name,"rb");
@@ -19,13 +19,16 @@ void Qparser::file_read(char file_name[])
   file.buffer = (char*)malloc(sizeof(char)*file.size);
   file.read = fread(file.buffer,1,file.size,file.target);
   fclose (file.target);
+
+  file.q_file.elements = 0;
+  file.q_file.buffer = (char*)malloc(sizeof(char)*file.size);
+  file.index = 0;
+  file.q_file.digits = 0;
 }
 
 void Qparser::file_compress()
 {
   int position;
-  file.q_file.elements = 0;
-  file.q_file.buffer = (char*)malloc(sizeof(char)*file.size);
   for(position = 0;position < file.size;position++)
   {
     if(file.buffer[position] != ' ' )
@@ -42,7 +45,6 @@ void Qparser::compile_lines()
   memset( &file.line, 0, sizeof(file.line) );
   int qchar;
   int fchar;
-  file.index = 0;
   fchar = 0;
 
   for(qchar = 0; qchar < file.q_file.elements; qchar++)
@@ -88,7 +90,6 @@ void Qparser::compile_variables_operation()
   int asignation;
 
   len = 0;
-  file.q_file.digits = 0;
   _digit = 0;
   asignation = 0;
 

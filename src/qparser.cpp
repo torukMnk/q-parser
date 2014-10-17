@@ -20,7 +20,7 @@ int main(void)
     cout<<"Insert name file: ";
     cin>>name;
     cout<<endl;
-    com.file_read(name);
+    com.file_load(name);
     com.file_compress();
     com.compile_lines();
     com.compile_variables_assignation();

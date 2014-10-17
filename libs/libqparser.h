@@ -67,7 +67,7 @@ class Qparser
 
   public:
 
-  void file_read(char file_name[]);
+  void file_load(char file_name[]);
   void file_compress();
   void compile_lines();
   void compile_variables_assignation();
