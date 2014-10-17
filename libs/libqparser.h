@@ -39,7 +39,7 @@ class Qparser
     char  variable[MEM_VARIABLES];
     float value;
     int   len;
-    int   n_operators;
+    int   _operator;
   };
 
   struct operations

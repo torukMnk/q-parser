@@ -137,9 +137,9 @@ void Qparser::compile_variables_operation()
 
   //Operaciones Algebraicas Basicas(Lineal)
   float total;
-  int n_operator;
+  int index_operator;
   total = 0;
-  n_operator = 0;
+  index_operator = 0;
   for(index = 0; index < file.index+1; index++)
   {
     for(_char = 0; _char < file.q_file.digits; _char++)
@@ -155,8 +155,8 @@ void Qparser::compile_variables_operation()
           }
         }
 
-        n_operator +=1;
-        file.asignation[index].n_operators = n_operator;
+        index_operator +=1;
+        file.asignation[index]._operator = index_operator;
         if(file.operation[_char]._operator == '\0')
         {
           total += file.operation[_char].value;
@@ -189,7 +189,7 @@ void Qparser::compile_variables_operation()
       else
       {
         total = 0;
-        n_operator = 0;
+        index_operator = 0;
       }
     }
   }
