@@ -19,8 +19,8 @@ int main(int argc,char* argv[])
     com.file_load(argv[1]);
     com.file_compress();
     com.compile_lines();
-    com.compile_variables_assignation();
-    com.compile_variables_operation();
+    com.compile_assignations();
+    com.compile_operations();
     com.q_file_make();
   }
   else

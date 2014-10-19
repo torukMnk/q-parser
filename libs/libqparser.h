@@ -70,8 +70,8 @@ class Qparser
   void file_load(char* file_name);
   void file_compress();
   void compile_lines();
-  void compile_variables_assignation();
-  void compile_variables_operation();
+  void compile_assignations();
+  void compile_operations();
   void q_file_make();
 
 };

@@ -50,36 +50,38 @@ void Qparser::compile_lines()
   for(qchar = 0; qchar < file.q_file.elements; qchar++)
   {
     file.line[file.index].data[fchar] = file.q_file.buffer[qchar];
-    fchar +=1;
+    fchar++;
     if( file.q_file.buffer[qchar] == ';' )
     {
       file.line[file.index].len = strlen(file.line[file.index].data);
-      file.index +=1;
+      file.index++;
       fchar = 0;
     }
   }
   free(file.q_file.buffer);
 }
 
-void Qparser::compile_variables_assignation()
+void Qparser::compile_assignations()
 {
   memset( &file.asignation, 0, sizeof(file.asignation) );
   int qchar;
   int index;
   qchar = 0;
-  for(index=0;index < file.index;index++)
+
+  for(index=0; index < file.index; index++)
   {
     while(file.line[index].data[qchar] != '=')
     {
       file.asignation[index].variable[qchar] = file.line[index].data[qchar];
-      qchar +=1;
+      qchar++;
     };
+
     file.asignation[index].len = strlen(file.asignation[index].variable);
     qchar = 0;
   }
 }
 
-void Qparser::compile_variables_operation()
+void Qparser::compile_operations()
 {
   memset( &file.operation, 0, sizeof(file.operation) );
   int index;
