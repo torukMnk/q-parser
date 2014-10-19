@@ -14,7 +14,7 @@ Build Files
 gcc version 4.6.3 (Ubuntu/Linaro 4.6.3-1ubuntu5)
 
 ````bash
-$sudo apt-get install cmake liblapack-dev
+$sudo apt-get install cmake
 ````
 
 ````bash
@@ -25,11 +25,7 @@ Execute Q-parser sample
 =========
 
 ````bash
-$./qparser
-````
-Insert name file:
-````bash
-data.txt
+$./qparser data.txt
 ````
 
 Out

@@ -7,3 +7,7 @@ qparser: $(OBJETS)
 libs/libqparser.o: libs/libqparser.cpp
 
 src/qparser.o: src/qparser.cpp libs/libqparser.h
+
+clean:
+				rm $(OBJETS)
+				rm qparser

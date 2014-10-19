@@ -8,7 +8,7 @@
 #include "libqparser.h"
 using namespace std;
 
-void Qparser::file_load(char file_name[])
+void Qparser::file_load(char* file_name)
 {
   file.name = file_name;
   file.target = fopen(file.name,"rb");
@@ -273,7 +273,6 @@ void Qparser::q_file_make()
   string data_r = resultados.str();
   fputs(data_r.c_str(),file.target);
   cout<<data_r<<endl;
-  cout<<file.q_file.digits-1<<endl;
   fclose (file.target);
 }
 

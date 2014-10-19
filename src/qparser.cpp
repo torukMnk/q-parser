@@ -8,28 +8,23 @@
 #include <libqparser.h>
 using namespace std;
 
-int main(void)
+int main(int argc,char* argv[])
 {
   Qparser com;
-  char option;
-  char name[16];
 
-  do{
-    system("clear");
-    cout<<":: Q Compiler ::"<<endl;
-    cout<<"Insert name file: ";
-    cin>>name;
-    cout<<endl;
-    com.file_load(name);
+  system("clear");
+  cout<<":: Q Compiler ::"<<endl;
+
+  if(argc == 2){
+    com.file_load(argv[1]);
     com.file_compress();
     com.compile_lines();
     com.compile_variables_assignation();
     com.compile_variables_operation();
     com.q_file_make();
+  }
+  else
+    cout<<"No such file"<<endl;
 
-    cout<<"Do you want compile another file: (Y/N): ";
-    cin>>option;
-    option = toupper(option);
-
-  }while(option != 'N');
+  return 0;
 }
