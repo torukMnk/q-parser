@@ -1,12 +1,21 @@
-OBJETS=src/qparser.o libs/libqparser.o
+OBJETS=src/qparser.o \
+				libs/libqparser.o \
+				libs/qcore.o \
+				libs/assignation.o \
+				libs/operation.o \
+				libs/qmake.o
+
 CXXFLAGS=-Ilibs
 
 qparser: $(OBJETS)
 				g++ $(OBJETS) -o qparser
 
 libs/libqparser.o: libs/libqparser.cpp
-
-src/qparser.o: src/qparser.cpp libs/libqparser.h
+libs/qcore.o: libs/qcore.cpp
+libs/assignation.o: libs/assignation.cpp
+libs/operation.o: libs/operation.cpp
+libs/qmake.o: libs/qmake.cpp
+src/qparser.o: src/qparser.cpp
 
 clean:
 				rm $(OBJETS)

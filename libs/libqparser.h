@@ -5,8 +5,8 @@
  * Professor: M.C. Benjamin Iglesias Cortes
  *
  * */
-#ifndef QPARSER_H
-#define QPARSER_H
+#ifndef LIBQPARSER_H
+#define LIBQPARSER_H
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -15,40 +15,12 @@
 #include <sstream>
 #include <iostream>
 
-#define MEM_LINES 128
-#define MEM_VARIABLES 128
-#define MEM_OPERATIONS 128
+#include "qcore.h"
+#include "assignation.h"
+#include "operation.h"
+#include "qmake.h"
 
-class Qparser
-{
-
-  struct q_files{
-    char*   buffer;
-    int     elements;
-    int     digits;
-  };
-
-  struct lines
-  {
-    char  data[MEM_VARIABLES];
-    int   len;
-  };
-
-  struct asignations
-  {
-    char  variable[MEM_VARIABLES];
-    float value;
-    int   len;
-    int   _operator;
-  };
-
-  struct operations
-  {
-    char  variable[MEM_VARIABLES];
-    char  _operator;
-    float value;
-    int   line;
-  };
+class Qparser{
 
   struct files{
     char*   name;
@@ -58,9 +30,9 @@ class Qparser
     size_t  read;
     int     index;
     struct  q_files q_file;
-    struct  lines line[MEM_LINES];
-    struct  asignations asignation[MEM_LINES];
-    struct  operations operation[MEM_OPERATIONS];
+    struct  lines line[MEM_LINE];
+    struct  assignations assignation[MEM_ASSIGNATION];
+    struct  operations operation[MEM_OPERATION];
   };
 
   files file;
@@ -75,5 +47,4 @@ class Qparser
   void q_file_make();
 
 };
-
 #endif

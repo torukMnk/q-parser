@@ -10,10 +10,10 @@ using namespace std;
 
 int main(int argc,char* argv[])
 {
-  Qparser com;
 
   system("clear");
   cout<<":: Q Compiler ::"<<endl;
+  Qparser com;
 
   if(argc == 2){
     com.file_load(argv[1]);
