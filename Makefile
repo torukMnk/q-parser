@@ -1,5 +1,4 @@
 OBJETS=src/qparser.o \
-				libs/libqparser.o \
 				libs/qcore.o \
 				libs/assignation.o \
 				libs/operation.o \
@@ -10,7 +9,6 @@ CXXFLAGS=-Ilibs
 qparser: $(OBJETS)
 				g++ $(OBJETS) -o qparser
 
-libs/libqparser.o: libs/libqparser.cpp
 libs/qcore.o: libs/qcore.cpp
 libs/assignation.o: libs/assignation.cpp
 libs/operation.o: libs/operation.cpp
