@@ -1,5 +1,6 @@
 Q-parser
 ========
+[![Travis Status](https://travis-ci.org/torukMnk/q-parser.svg?branch=master)](https://travis-ci.org/torukMnk/q-parser)
 
 Universidad de Colima ISC Project 2013
 
@@ -14,7 +15,7 @@ Build Files
 gcc version 4.6.3 (Ubuntu/Linaro 4.6.3-1ubuntu5)
 
 ````bash
-$sudo apt-get install cmake
+$sudo apt-get install build-essential make
 ````
 
 ````bash
@@ -56,3 +57,6 @@ Generated file
 q-data.txt
 ````
 
+TODO
+========
+ * Expression Tree
